@@ -36,8 +36,8 @@ def restore(target_ip, host_ip):
     send(arp_response, count=3, verbose=0)
 
 if __name__ == "__main__":
-    target_ip = "192.168.0.84"  # Replace with your phone's IP address
-    gateway_ip = "192.168.0.1"  # Replace with your router's IP address
+    target_ip = "target.ip"  # Replace with your phone's IP address
+    gateway_ip = "router.ip"  # Replace with your router's IP address
 
     try:
         print("Starting ARP spoofing... Press Ctrl+C to stop.")
