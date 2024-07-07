@@ -1,4 +1,5 @@
-from scapy.all import sniff, TCP, Raw, IP
+from scapy.all import sniff, TCP, Raw
+from datetime import datetime
 
 def packet_callback_http(packet):
     """ Callback function to process captured HTTP packets """
@@ -7,14 +8,13 @@ def packet_callback_http(packet):
             payload = packet[Raw].load
             if b'GET' in payload or b'POST' in payload:
                 http_payload = payload.decode('utf-8', errors='ignore')
-                if 'httpforever.com' in http_payload or 'neverssl.com' in http_payload:
-                    print(f"[*] HTTP Request: {http_payload}")
-                else:
-                    print(f"[*] Other HTTP Request: {http_payload}")
+                log_data = f"[*] HTTP Request: {http_payload}\n"
+                with open(f"../sniffer-logs/http/http_sniffer_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt", 'a') as file:
+                    file.write(log_data)
             else:
-                print("[*] Non-HTTP TCP packet")
-        else:
-            print("[*] Non-TCP or Non-Raw packet")
+                log_data = "[*] Other HTTP Request\n" + packet
+                with open(f"../sniffer-logs/http/http_sniffer_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt", 'a') as file:
+                    file.write(log_data)
     except Exception as e:
         print(f"Error processing packet: {e}")
 
@@ -26,3 +26,5 @@ if __name__ == "__main__":
         print("Permission denied: Please run the script as an administrator.")
     except Exception as e:
         print(f"An error occurred: {e}")
+    except KeyboardInterrupt:
+        print("Stopped http sniffing")
